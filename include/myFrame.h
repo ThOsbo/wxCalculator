@@ -8,12 +8,16 @@
 
     class MyFrame : public wxFrame
     {
-    public:
+    public :
         MyFrame();
 
         wxTextCtrl *displayWindow = nullptr;
 
         void OnNumButtonClick(wxCommandEvent &evt);
-        void OnOpButtonCLick(wxCommandEvent &evt);
+        void OnOpButtonClick(wxCommandEvent &evt);
+    
+    private :
+        wxString operations [4] = {"+", "-", "x", "/"};
+
     };
 #endif

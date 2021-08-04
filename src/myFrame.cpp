@@ -34,12 +34,13 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
 
     controlSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
 
-    std :: string operations [4] = {"+", "-", "x", "/"};
+    //std :: string operations [4] = {"+", "-", "x", "/"};
 
     for (int i = 0; i < 4; i++) 
     {
-        wxButton *opButton = new wxButton(this, wxID_ANY, operations[i], wxPoint(0, 0), wxSize(40, 40));
+        wxButton *opButton = new wxButton(this, 3000 + i, operations[i], wxPoint(0, 0), wxSize(40, 40));
         opButton -> SetFont(font);
+        opButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnOpButtonClick, this);
 
         opsSizer -> Add(opButton, 1, wxEXPAND | wxALL, 2.5);
     }
@@ -58,7 +59,8 @@ void MyFrame :: OnNumButtonClick(wxCommandEvent &evt)
     displayWindow -> AppendText(std :: to_string(numClicked));
 }
 
-void MyFrame :: OnOpButtonCLick(wxCommandEvent &evt) 
+void MyFrame :: OnOpButtonClick(wxCommandEvent &evt) 
 {
-
+    int opClicked = evt.GetId() - 3000;
+    displayWindow -> AppendText(operations[opClicked]);
 }
