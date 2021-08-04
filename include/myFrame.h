@@ -11,6 +11,8 @@
     public:
         MyFrame();
 
+        wxTextCtrl *displayWindow = nullptr;
+
         void OnNumButtonClick(wxCommandEvent &evt);
         void OnOpButtonCLick(wxCommandEvent &evt);
     };

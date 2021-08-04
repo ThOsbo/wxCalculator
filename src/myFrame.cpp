@@ -12,17 +12,18 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
 {
     wxBoxSizer *displaySizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *controlSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxGridSizer *numbersSizer = new wxGridSizer(3, 3, 5, 5);
+    wxGridSizer *numbersSizer = new wxGridSizer(4, 3, 5, 5);
     wxGridSizer *opsSizer = new wxGridSizer(2, 2, 5, 5);
 
-    wxTextCtrl *displayWindow = new wxTextCtrl(this, wxID_ANY, "", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, 50), wxTE_READONLY);
+    displayWindow = new wxTextCtrl(this, wxID_ANY, "", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, 50), wxTE_READONLY);
 
     displaySizer -> Add(displayWindow, 0, wxEXPAND | wxALL, 5);
 
-    for (int i = 1; i <= 9; i++) 
+    for (int i = 1; i <= 10; i++) 
     {
-        wxButton *numButton = new wxButton(this, wxID_ANY, std :: to_string(i), wxPoint(0, 0), wxSize(40, 40));
-        numbersSizer -> Add(numButton, 1, wxEXPAND | wxALL, 2.5);               
+        wxButton *numButton = new wxButton(this, 2000 + i, std :: to_string(i % 10), wxPoint(0, 0), wxSize(40, 40));
+        numbersSizer -> Add(numButton, 1, wxEXPAND | wxALL, 2.5); 
+        numButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnNumButtonClick, this);              
     }
 
     controlSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
@@ -45,10 +46,11 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
 
 void MyFrame :: OnNumButtonClick(wxCommandEvent &evt) 
 {
-
+    int numClicked = (evt.GetId() - 2000) % 10;
+    displayWindow -> AppendText(std :: to_string(numClicked));
 }
 
 void MyFrame :: OnOpButtonCLick(wxCommandEvent &evt) 
 {
-    
+
 }
