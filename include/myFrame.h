@@ -23,6 +23,15 @@
 
     private :
 
+        const wxString plusSymbol = "+";
+        const wxString minusSymbol = "-";
+        const wxString multSymbol = "x";
+        const wxString divideSymbol = "/";
+        const wxString openBracSymbol = "(";
+        const wxString closeBracSymbol = ")";
+        const wxString equalSymbol = "=";
+        const wxString pointSymbol = ".";
+
         bool minusClick = false;
         bool closeBracClick = false;
 
@@ -32,15 +41,15 @@
         static const int opsStartID = 3000;
 
         static const int numOfOperations = 6;
-        wxString operations [numOfOperations] = {"+", "-", "x", "/", "(", ")"};
+        wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, openBracSymbol, closeBracSymbol};
         wxString toEnable [numOfOperations][numOfOperations + 1] = 
         {
-            {"", "-", "", "", "(", "", ""},
-            {"", "", "", "", "(", "", ""},
-            {"", "-", "", "", "(", "", ""},
-            {"", "-", "", "", "(", "", ""},
-            {"", "-", "", "", "(", "", ""},
-            {"+", "-", "x", "/", "", ")", ""}
+            {"", minusSymbol, "", "", openBracSymbol, "", ""},
+            {"", "", "", "", openBracSymbol, "", ""},
+            {"", minusSymbol, "", "", openBracSymbol, "", ""},
+            {"", minusSymbol, "", "", openBracSymbol, "", ""},
+            {"", minusSymbol, "", "", openBracSymbol, "", ""},
+            {plusSymbol, minusSymbol, multSymbol, divideSymbol, "", closeBracSymbol, ""}
         };
         wxButton **opButtons;
         wxButton *eqButtonPointer;
