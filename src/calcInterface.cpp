@@ -1,4 +1,5 @@
-#include <myFrame.h>
+#include <calcInterface.h>
+#include <calculate.h>
 
 #if !defined(X_MAIN_FRAME_DIMENSION)
     #define X_MAIN_FRAME_DIMENSION 400
@@ -8,7 +9,7 @@
     #define Y_MAIN_FRAME_DIMENSION 400
 #endif
 
-MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, Y_MAIN_FRAME_DIMENSION)) 
+Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, Y_MAIN_FRAME_DIMENSION)) 
 {
     
     wxBoxSizer *displaySizer = new wxBoxSizer(wxVERTICAL);
@@ -29,7 +30,7 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
     {
         wxButton *numButton = new wxButton(this, numStartID + i, std :: to_string(i % 10), wxPoint(0, 0), wxSize(40, 40));
         numButton -> SetFont(font);
-        numButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnNumButtonClick, this);
+        numButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnNumButtonClick, this);
 
         numButtons[i - 1] = numButton;
         numbersSizer -> Add(numButton, 1, wxEXPAND | wxALL, 2.5);                       
@@ -38,7 +39,7 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
     wxButton *pointButton = new wxButton(this, numStartID + 11, pointSymbol, wxPoint(0, 0), wxSize(40, 40));
     pointButton -> SetFont(font);
     pointButton -> Enable(false);
-    pointButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnNumButtonClick, this);
+    pointButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnNumButtonClick, this);
     
     pointButtonPointer = pointButton;
     numbersSizer -> Add(pointButton, 1, wxEXPAND | wxALL, 2.5);
@@ -55,7 +56,7 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
         {
             opButton -> Enable(false);
         }        
-        opButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnOpButtonClick, this);
+        opButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnOpButtonClick, this);
 
         opButtons[i] = opButton;
         opsSizer -> Add(opButton, 1, wxEXPAND | wxALL, 2.5);
@@ -64,7 +65,7 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
     wxButton *eqButton = new wxButton(this, 3999, equalSymbol, wxPoint(0, 0), wxSize(40, 40));
     eqButton -> SetFont(font);
     eqButton -> Enable(false);
-    eqButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, MyFrame :: OnEqButtonClick, this);
+    eqButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnEqButtonClick, this);
 
     eqButtonPointer = eqButton;
     opsSizer -> Add(eqButton, 1, wxEXPAND | wxALL, 2.5);
@@ -77,31 +78,29 @@ MyFrame :: MyFrame() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wx
     this -> Layout();
 }
 
-void MyFrame :: OnNumButtonClick(wxCommandEvent &evt) 
+void Interface :: OnNumButtonClick(wxCommandEvent &evt) 
 {
     int numClicked = evt.GetId() - numStartID;
     if (numClicked <= 10) 
     {
-        wxString toEnableOps[numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, "", closeBracSymbol};
-        SetOpButtonsEnable(toEnableOps);
+        SetOpButtonsEnable(numClickToEnable);
         eqButtonPointer -> Enable(true);
         pointButtonPointer -> Enable(true);
         displayWindow -> AppendText(std :: to_string(numClicked % 10));
     }
     else if (evt.GetId() == pointButtonPointer -> GetId()) 
     {
-        wxString toEnableOps[numOfOperations] = {"", "", "", "", "", ""};
-        SetOpButtonsEnable(toEnableOps);
+        SetOpButtonsEnable(pointClickToEnable);
         eqButtonPointer -> Enable(false);
         pointButtonPointer -> Enable(false);
         displayWindow -> AppendText(pointSymbol);
     }
 }
 
-void MyFrame :: OnOpButtonClick(wxCommandEvent &evt) 
+void Interface :: OnOpButtonClick(wxCommandEvent &evt) 
 {
     int opClicked = evt.GetId() - opsStartID;
-    SetOpButtonsEnable(toEnable[opClicked]);
+    SetOpButtonsEnable(opClickToEnable[opClicked]);
     pointButtonPointer -> Enable(false);
     if (operations[opClicked] == closeBracSymbol) 
     {
@@ -116,12 +115,12 @@ void MyFrame :: OnOpButtonClick(wxCommandEvent &evt)
     displayWindow -> AppendText(operations[opClicked]);
 }
 
-void MyFrame :: OnEqButtonClick(wxCommandEvent &evt) 
+void Interface :: OnEqButtonClick(wxCommandEvent &evt) 
 {
 
 }
 
-void MyFrame :: SetOpButtonsEnable(wxString toEnable[]) 
+void Interface :: SetOpButtonsEnable(wxString toEnable[]) 
 {
     for (int i = 0; i < numOfOperations; i++) 
     {
@@ -143,7 +142,7 @@ void MyFrame :: SetOpButtonsEnable(wxString toEnable[])
     }
 }
 
-void MyFrame :: SetNumButtonsEnable(bool isEnabled) 
+void Interface :: SetNumButtonsEnable(bool isEnabled) 
 {
     for (int i = 0; i < 10; i++) 
     {

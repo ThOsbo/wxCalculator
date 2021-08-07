@@ -3,19 +3,19 @@
     #include <wx/wx.h>
 #endif
 
-#include <myFrame.h>
+#include <calcInterface.h>
 
-class MyApp : public wxApp 
+class CalcApp : public wxApp 
 {
     public :
         virtual bool OnInit();
 };
 
-wxIMPLEMENT_APP(MyApp);
+wxIMPLEMENT_APP(CalcApp);
 
-bool MyApp :: OnInit() 
+bool CalcApp :: OnInit() 
 {
-    MyFrame *frame = new MyFrame();
+    Interface *frame = new Interface();
     frame -> Show(true);
     return true;
 }
