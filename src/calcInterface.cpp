@@ -80,6 +80,12 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
 void Interface :: OnNumButtonClick(wxCommandEvent &evt) 
 {
+    if (eqButtonClick) 
+    {
+        displayWindow -> Clear();
+        eqButtonClick = false;
+    }
+
     int numClicked = evt.GetId() - numStartID;
     if (numClicked <= 10) 
     {
@@ -99,6 +105,12 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
 
 void Interface :: OnOpButtonClick(wxCommandEvent &evt) 
 {
+    if (eqButtonClick) 
+    {
+        displayWindow -> Clear();
+        eqButtonClick = false;
+    }
+
     int opClicked = evt.GetId() - opsStartID;
     SetOpButtonsEnable(opClickToEnable[opClicked]);
     pointButtonPointer -> Enable(false);
@@ -117,7 +129,11 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
 
 void Interface :: OnEqButtonClick(wxCommandEvent &evt) 
 {
-
+    wxString toCalculate = displayWindow -> GetValue();
+    ans = wxString(PerformCalculation :: GetResult(toCalculate.ToStdString()));
+    displayWindow -> SetValue("=" + ans);
+    ResetButtons();
+    eqButtonClick = true;
 }
 
 void Interface :: SetOpButtonsEnable(wxString toEnable[]) 
@@ -149,4 +165,13 @@ void Interface :: SetNumButtonsEnable(bool isEnabled)
         wxButton *numButton = numButtons[i];
         numButton -> Enable(isEnabled);
     }
+}
+
+void Interface :: ResetButtons() 
+{
+    SetNumButtonsEnable(true);
+    SetOpButtonsEnable(initialEnable);
+
+    pointButtonPointer -> Enable(false);
+    eqButtonPointer -> Enable(false);
 }

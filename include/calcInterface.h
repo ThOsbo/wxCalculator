@@ -21,7 +21,11 @@
             void SetOpButtonsEnable(wxString toExclude[]);
             void SetNumButtonsEnable(bool isEnabled);
 
+            void ResetButtons();
+
         private :
+
+            wxString ans = "";
 
             const wxString plusSymbol = "+";
             const wxString minusSymbol = "-";
@@ -34,6 +38,7 @@
 
             bool minusClick = false;
             bool closeBracClick = false;
+            bool eqButtonClick = false;
 
             int numBrackets = 0;
 
@@ -42,6 +47,8 @@
 
             static const int numOfOperations = 6;
             wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, openBracSymbol, closeBracSymbol};
+
+            wxString initialEnable [numOfOperations] = {"", minusSymbol, "", "", openBracSymbol, ""};
 
             wxString numClickToEnable[numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, "", closeBracSymbol};
 
