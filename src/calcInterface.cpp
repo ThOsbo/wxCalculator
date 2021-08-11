@@ -24,7 +24,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     displaySizer -> Add(displayWindow, 0, wxEXPAND | wxALL, 5);
 
-    numButtons = new wxButton*[10];
+    numButtons = new wxButton*[10] { nullptr };
 
     for (int i = 1; i <= 10; i++) 
     {
@@ -33,7 +33,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
         numButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnNumButtonClick, this);
 
         numButtons[i - 1] = numButton;
-        numbersSizer -> Add(numButton, 1, wxEXPAND | wxALL, 2.5);                       
+        numbersSizer -> Add(numButton, 1, wxEXPAND | wxALL, 2.5);                 
     }
 
     wxButton *pointButton = new wxButton(this, numStartID + 11, pointSymbol, wxPoint(0, 0), wxSize(40, 40));
@@ -46,7 +46,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     controlSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
 
-    opButtons = new wxButton*[numOfOperations + 1];
+    opButtons = new wxButton*[numOfOperations + 1] { nullptr };
 
     for (int i = 0; i < numOfOperations; i++) 
     {
@@ -76,6 +76,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     this -> SetSizer(displaySizer);
     this -> Layout();
+
 }
 
 void Interface :: OnNumButtonClick(wxCommandEvent &evt) 
@@ -101,6 +102,8 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
         pointButtonPointer -> Enable(false);
         displayWindow -> AppendText(pointSymbol);
     }
+
+    evt.Skip();
 }
 
 void Interface :: OnOpButtonClick(wxCommandEvent &evt) 
@@ -112,19 +115,26 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
     }
 
     int opClicked = evt.GetId() - opsStartID;
-    SetOpButtonsEnable(opClickToEnable[opClicked]);
     pointButtonPointer -> Enable(false);
     if (operations[opClicked] == closeBracSymbol) 
     {
+        numBrackets--;
         eqButtonPointer -> Enable(true);
         SetNumButtonsEnable(false);
+    }
+    else if (operations[opClicked] == openBracSymbol) 
+    {
+        numBrackets++;
     }
     else 
     {
         eqButtonPointer -> Enable(false);
         SetNumButtonsEnable(true);
     }
+    SetOpButtonsEnable(opClickToEnable[opClicked]);
     displayWindow -> AppendText(operations[opClicked]);
+
+    evt.Skip();
 }
 
 void Interface :: OnEqButtonClick(wxCommandEvent &evt) 
@@ -134,27 +144,23 @@ void Interface :: OnEqButtonClick(wxCommandEvent &evt)
     displayWindow -> SetValue("=" + ans);
     ResetButtons();
     eqButtonClick = true;
+
+    evt.Skip();
 }
 
-void Interface :: SetOpButtonsEnable(wxString toEnable[]) 
+void Interface :: SetOpButtonsEnable(bool toEnable[]) 
 {
     for (int i = 0; i < numOfOperations; i++) 
     {
-        bool isEnabled = false;
-
-        wxButton *opButton = opButtons[i];
-        wxString operation = opButton -> GetLabel();
-
-        for (int i = 0; i < numOfOperations; i++) 
+        if (opButtons[i] -> GetLabel() == closeBracSymbol) 
         {
-            if (operation == toEnable[i]) 
-            {
-                isEnabled = true;
-                break;
-            }
-        }           
-        
-        opButton -> Enable(isEnabled);       
+            opButtons[i] -> Enable(toEnable[i] && numBrackets > 0);
+        }
+        else 
+        {
+            opButtons[i] -> Enable(toEnable[i]);  
+        }  
+             
     }
 }
 
