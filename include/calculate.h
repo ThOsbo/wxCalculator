@@ -2,6 +2,7 @@
     #define CALCULATE_H
 
     #include <string>
+    #include <vector>
     #include <regex>
 
     class PerformCalculation
@@ -15,6 +16,9 @@
             static std :: string Minus(int num1, int num2);
             static std :: string Multiply(int num1, int num2);
             static std :: string Divide(int num1, int num2);
+
+            static std :: vector<std :: string> GetRegMatches(std :: string expression, std :: regex reg);
+            static std :: string ReplaceSubstring(std :: string expression, std :: string toReplace, std :: string replaceWith);
     };
 
 #endif
