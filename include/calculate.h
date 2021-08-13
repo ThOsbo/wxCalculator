@@ -12,10 +12,10 @@
 
         private : 
             static std :: string EvaluateExpression(std :: string expression);
-            static std :: string Add(int num1, int num2);
-            static std :: string Minus(int num1, int num2);
-            static std :: string Multiply(int num1, int num2);
-            static std :: string Divide(int num1, int num2);
+            static std :: string Add(std :: string expression);
+            static std :: string Minus(std :: string expression);
+            static std :: string Multiply(std :: string expression);
+            static std :: string Divide(std :: string expression);
 
             static std :: vector<std :: string> GetRegMatches(std :: string expression, std :: regex reg);
             static std :: string ReplaceSubstring(std :: string expression, std :: string toReplace, std :: string replaceWith);

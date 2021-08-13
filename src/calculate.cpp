@@ -3,7 +3,7 @@
 
 std :: string PerformCalculation :: GetResult(std :: string toCalc) 
 {
-    std :: regex bracReg("(\\([^\\(\\)]+\\))");
+    std :: regex bracReg(R"(\([^()]+\))");
 
     bool foundExp;
 
@@ -34,32 +34,160 @@ std :: string PerformCalculation :: GetResult(std :: string toCalc)
 
     } while (foundExp);
 
+    toCalc = EvaluateExpression(toCalc);
+
     return toCalc;
 }
 
 std :: string PerformCalculation :: EvaluateExpression(std :: string expression) 
 {
-    return "b";
+    std :: regex divReg(R"(\-?\d+(\.\d+)?\/\-?\d+(\.\d+)?)");
+
+    bool foundExp;
+
+    do 
+    {
+        std :: vector<std :: string> subExps = GetRegMatches(expression, divReg);
+        foundExp = false;
+
+        while (subExps.size() > 0) 
+        {
+            foundExp = true;
+
+            std :: string subExp = subExps[subExps.size() - 1];
+
+            std :: cout << subExp << std :: endl;
+            std :: string subExpResult = Divide(subExp);
+            
+            //replaces sub-expression with result
+            expression = ReplaceSubstring(expression, subExp, subExpResult);
+
+            subExps.pop_back();
+        }
+
+    } while (foundExp);
+
+    std :: regex multReg(R"(\-?\d+(\.\d+)?x\-?\d+(\.\d+)?)");
+
+    do 
+    {
+        std :: vector<std :: string> subExps = GetRegMatches(expression, multReg);
+        foundExp = false;
+
+        while (subExps.size() > 0) 
+        {
+            foundExp = true;
+
+            std :: string subExp = subExps[subExps.size() - 1];
+
+            std :: cout << subExp << std :: endl;
+            std :: string subExpResult = Multiply(subExp);
+            
+            //replaces sub-expression with result
+            expression = ReplaceSubstring(expression, subExp, subExpResult);
+
+            subExps.pop_back();
+        }
+
+    } while (foundExp);
+
+    std :: regex minusReg(R"(\-?\d+(\.\d+)?\-\-?\d+(\.\d+)?)");
+
+    do 
+    {
+        std :: vector<std :: string> subExps = GetRegMatches(expression, minusReg);
+        foundExp = false;
+
+        while (subExps.size() > 0) 
+        {
+            foundExp = true;
+
+            std :: string subExp = subExps[subExps.size() - 1];
+
+            std :: cout << subExp << std :: endl;
+            std :: string subExpResult = Minus(subExp);
+            
+            //replaces sub-expression with result
+            expression = ReplaceSubstring(expression, subExp, subExpResult);
+
+            subExps.pop_back();
+        }
+
+    } while (foundExp);
+
+    std :: regex plusReg(R"(\-?\d+(\.\d+)?\+\-?\d+(\.\d+)?)");
+
+    do 
+    {
+        std :: vector<std :: string> subExps = GetRegMatches(expression, plusReg);
+        foundExp = false;
+
+        while (subExps.size() > 0) 
+        {
+            foundExp = true;
+
+            std :: string subExp = subExps[subExps.size() - 1];
+
+            std :: cout << subExp << std :: endl;
+            std :: string subExpResult = Add(subExp);
+            
+            //replaces sub-expression with result
+            expression = ReplaceSubstring(expression, subExp, subExpResult);
+
+            subExps.pop_back();
+        }
+
+    } while (foundExp);
+
+    return expression;
 }
 
-std :: string PerformCalculation :: Add(int num1, int num2) 
+std :: string PerformCalculation :: Add(std :: string expression) 
 {
-    return std :: to_string(num1 + num2);
+    int divPos = expression.find("+");
+
+    float num1 = std :: stof(expression.substr(0, divPos));
+    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+
+    std :: string result = std :: to_string(num1 + num2);
+
+    return result;
 }
 
-std :: string PerformCalculation :: Minus(int num1, int num2) 
+std :: string PerformCalculation :: Minus(std :: string expression) 
 {
-    return std :: to_string(num1 - num2);
+    int divPos = expression.find("-");
+
+    float num1 = std :: stof(expression.substr(0, divPos));
+    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+
+    std :: string result = std :: to_string(num1 - num2);
+
+    return result;
 }
 
-std :: string PerformCalculation :: Multiply(int num1, int num2) 
+std :: string PerformCalculation :: Multiply(std :: string expression) 
 {
-    return std :: to_string(num1 * num2);
+    int divPos = expression.find("x");
+
+    float num1 = std :: stof(expression.substr(0, divPos));
+    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+
+    std :: string result = std :: to_string(num1 * num2);
+
+    return result;
 }
 
-std :: string PerformCalculation :: Divide(int num1, int num2) 
+std :: string PerformCalculation :: Divide(std :: string expression) 
 {
-    return std :: to_string(num1 / num2);
+    int divPos = expression.find("/");
+
+    float num1 = std :: stof(expression.substr(0, divPos));
+    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+
+    std :: string result = std :: to_string(num1 / num2);
+
+    return result;
 }
 
 std :: vector<std :: string> PerformCalculation :: GetRegMatches(std :: string expression, std :: regex reg) 
