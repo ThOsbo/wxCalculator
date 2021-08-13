@@ -140,7 +140,16 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
 void Interface :: OnEqButtonClick(wxCommandEvent &evt) 
 {
     wxString toCalculate = displayWindow -> GetValue();
-    ans = wxString(PerformCalculation :: GetResult(toCalculate.ToStdString()));
+
+    try 
+    {
+        ans = wxString(PerformCalculation :: GetResult(toCalculate.ToStdString()));
+    }
+    catch (const std :: exception &ex)
+    {
+        ans = "Error";
+    }
+    
     displayWindow -> SetValue("=" + ans);
     ResetButtons();
     eqButtonClick = true;
