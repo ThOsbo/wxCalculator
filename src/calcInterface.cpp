@@ -91,7 +91,15 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
     if (numClicked <= 10) 
     {
         SetOpButtonsEnable(numClickToEnable);
-        eqButtonPointer -> Enable(true);
+        if (numBrackets == 0) 
+        {
+            eqButtonPointer -> Enable(true);
+        }
+        else 
+        {
+            eqButtonPointer -> Enable(false);
+        }
+        
         pointButtonPointer -> Enable(true);
         displayWindow -> AppendText(std :: to_string(numClicked % 10));
     }
@@ -119,15 +127,19 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
     if (operations[opClicked] == closeBracSymbol) 
     {
         numBrackets--;
-        eqButtonPointer -> Enable(true);
+        if (numBrackets == 0) 
+        {
+            eqButtonPointer -> Enable(true);
+        }
+
         SetNumButtonsEnable(false);
-    }
-    else if (operations[opClicked] == openBracSymbol) 
-    {
-        numBrackets++;
     }
     else 
     {
+        if (operations[opClicked] == openBracSymbol) 
+        {
+            numBrackets++;
+        }
         eqButtonPointer -> Enable(false);
         SetNumButtonsEnable(true);
     }
