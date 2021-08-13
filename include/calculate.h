@@ -12,6 +12,7 @@
 
         private : 
             static std :: string EvaluateExpression(std :: string expression);
+            static std :: string PerformOperations(std :: string expression, std :: regex opReg, std :: string (*PerformOperation)(std :: string));
             static std :: string Add(std :: string expression);
             static std :: string Minus(std :: string expression);
             static std :: string Multiply(std :: string expression);

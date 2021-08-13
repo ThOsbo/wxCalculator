@@ -1,5 +1,4 @@
 #include <calculate.h>
-#include <iostream>
 
 std :: string PerformCalculation :: GetResult(std :: string toCalc) 
 {
@@ -23,7 +22,6 @@ std :: string PerformCalculation :: GetResult(std :: string toCalc)
             toEvaluate = toEvaluate.replace(toEvaluate.length() - 1, 1, "");
             toEvaluate = toEvaluate.replace(0, 1, "");
 
-            std :: cout << toEvaluate << std :: endl;
             std :: string subExpResult = EvaluateExpression(toEvaluate);
             
             //replaces sub-expression with result
@@ -43,11 +41,30 @@ std :: string PerformCalculation :: EvaluateExpression(std :: string expression)
 {
     std :: regex divReg(R"(\-?\d+(\.\d+)?\/\-?\d+(\.\d+)?)");
 
+    expression = PerformOperations(expression, divReg, &Divide);
+
+    std :: regex multReg(R"(\-?\d+(\.\d+)?x\-?\d+(\.\d+)?)");
+
+    expression = PerformOperations(expression, multReg, &Multiply);
+
+    std :: regex minusReg(R"(\-?\d+(\.\d+)?\-\-?\d+(\.\d+)?)");
+
+    expression = PerformOperations(expression, minusReg, &Minus);
+
+    std :: regex plusReg(R"(\-?\d+(\.\d+)?\+\-?\d+(\.\d+)?)");
+
+    expression = PerformOperations(expression, plusReg, &Add);
+
+    return expression;
+}
+
+std :: string PerformCalculation :: PerformOperations(std :: string expression, std :: regex opReg, std :: string (*PerformOperation)(std :: string)) 
+{
     bool foundExp;
 
     do 
     {
-        std :: vector<std :: string> subExps = GetRegMatches(expression, divReg);
+        std :: vector<std :: string> subExps = GetRegMatches(expression, opReg);
         foundExp = false;
 
         while (subExps.size() > 0) 
@@ -55,81 +72,7 @@ std :: string PerformCalculation :: EvaluateExpression(std :: string expression)
             foundExp = true;
 
             std :: string subExp = subExps[subExps.size() - 1];
-
-            std :: cout << subExp << std :: endl;
-            std :: string subExpResult = Divide(subExp);
-            
-            //replaces sub-expression with result
-            expression = ReplaceSubstring(expression, subExp, subExpResult);
-
-            subExps.pop_back();
-        }
-
-    } while (foundExp);
-
-    std :: regex multReg(R"(\-?\d+(\.\d+)?x\-?\d+(\.\d+)?)");
-
-    do 
-    {
-        std :: vector<std :: string> subExps = GetRegMatches(expression, multReg);
-        foundExp = false;
-
-        while (subExps.size() > 0) 
-        {
-            foundExp = true;
-
-            std :: string subExp = subExps[subExps.size() - 1];
-
-            std :: cout << subExp << std :: endl;
-            std :: string subExpResult = Multiply(subExp);
-            
-            //replaces sub-expression with result
-            expression = ReplaceSubstring(expression, subExp, subExpResult);
-
-            subExps.pop_back();
-        }
-
-    } while (foundExp);
-
-    std :: regex minusReg(R"(\-?\d+(\.\d+)?\-\-?\d+(\.\d+)?)");
-
-    do 
-    {
-        std :: vector<std :: string> subExps = GetRegMatches(expression, minusReg);
-        foundExp = false;
-
-        while (subExps.size() > 0) 
-        {
-            foundExp = true;
-
-            std :: string subExp = subExps[subExps.size() - 1];
-
-            std :: cout << subExp << std :: endl;
-            std :: string subExpResult = Minus(subExp);
-            
-            //replaces sub-expression with result
-            expression = ReplaceSubstring(expression, subExp, subExpResult);
-
-            subExps.pop_back();
-        }
-
-    } while (foundExp);
-
-    std :: regex plusReg(R"(\-?\d+(\.\d+)?\+\-?\d+(\.\d+)?)");
-
-    do 
-    {
-        std :: vector<std :: string> subExps = GetRegMatches(expression, plusReg);
-        foundExp = false;
-
-        while (subExps.size() > 0) 
-        {
-            foundExp = true;
-
-            std :: string subExp = subExps[subExps.size() - 1];
-
-            std :: cout << subExp << std :: endl;
-            std :: string subExpResult = Add(subExp);
+            std :: string subExpResult = PerformOperation(subExp);
             
             //replaces sub-expression with result
             expression = ReplaceSubstring(expression, subExp, subExpResult);
