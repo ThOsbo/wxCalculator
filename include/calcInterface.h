@@ -28,7 +28,7 @@
             void DisplayAndStoreInput(wxString toDisplay, int buttonID);
 
             //functions for enabling and disabling buttons
-            void SetButtonsEnable(int buttonID);
+            void SetButtonsEnable(int buttonID, bool isDelete = false);
             void SetOpButtonsEnable(bool toEnable[]);
             void SetNumButtonsEnable(bool isEnabled);
             void ResetButtons();
@@ -36,6 +36,8 @@
             //stores result of last calculation
             wxString ans = "";
 
+            //records all inputs
+            int numberInputs = 0;
             std :: vector<wxString> buttonsPressed;
             std :: vector<int> buttonIDsPressed;
 

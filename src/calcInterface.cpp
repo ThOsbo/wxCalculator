@@ -183,6 +183,36 @@ void Interface :: OnShiftButtonClick(wxCommandEvent &evt)
 
 void Interface :: OnDelButtonClick(wxCommandEvent &evt) 
 {
+    if (numberInputs > 1) 
+    {
+        wxString currentInput = displayWindow -> GetValue();
+
+        wxString lastInput = buttonsPressed[numberInputs - 1];
+        currentInput = currentInput.replace(currentInput.length() - lastInput.length(), lastInput.length(), "");
+
+        displayWindow -> SetValue(currentInput);
+
+        if (lastInput == openBracSymbol) 
+        {
+            numBrackets--;
+        }
+        else if (lastInput == closeBracSymbol) 
+        {
+            numBrackets++;
+        }
+
+        SetButtonsEnable(buttonIDsPressed[numberInputs - 2], true);
+
+        buttonsPressed.pop_back();
+        buttonIDsPressed.pop_back();
+        numberInputs--;
+    }
+    else 
+    {
+        displayWindow -> Clear();
+        ResetButtons();
+    }         
+
     evt.Skip();
 }
 
@@ -194,7 +224,7 @@ void Interface :: OnClearButtonClick(wxCommandEvent &evt)
     evt.Skip();
 }
 
-void Interface :: SetButtonsEnable(int buttonID) 
+void Interface :: SetButtonsEnable(int buttonID, bool isDelete) 
 {
     if (opsStartID <= buttonID) 
     {
@@ -202,7 +232,11 @@ void Interface :: SetButtonsEnable(int buttonID)
         pointButtonPointer -> Enable(false);
         if (operations[opClicked] == closeBracSymbol) 
         {
-            numBrackets--;
+            if (!isDelete) 
+            {
+                numBrackets--;
+            }
+            
             if (numBrackets == 0) 
             {
                 eqButtonPointer -> Enable(true);
@@ -212,13 +246,15 @@ void Interface :: SetButtonsEnable(int buttonID)
         }
         else 
         {
-            if (operations[opClicked] == openBracSymbol) 
+            if (operations[opClicked] == openBracSymbol && !isDelete) 
             {
                 numBrackets++;
             }
+
             eqButtonPointer -> Enable(false);
             SetNumButtonsEnable(true);
         }
+
         SetOpButtonsEnable(opClickToEnable[opClicked]);
     }
     else if (numStartID <= buttonID) 
@@ -244,10 +280,12 @@ void Interface :: SetButtonsEnable(int buttonID)
             eqButtonPointer -> Enable(false);
             pointButtonPointer -> Enable(false);
         }
+
+        SetNumButtonsEnable(true);
     }
     else if (ctrlStartID <= buttonID) 
     {
-        
+        //do nothing, control buttons enable or disable anything
     }
 }
 
@@ -267,16 +305,6 @@ void Interface :: SetOpButtonsEnable(bool toEnable[])
     }
 }
 
-void Interface :: DisplayAndStoreInput(wxString toDisplay, int buttonID) 
-{
-    //appends inputed string to the display window
-    displayWindow -> AppendText(toDisplay);
-
-    //records the input
-    buttonsPressed.push_back(toDisplay);
-    buttonIDsPressed.push_back(buttonID);
-}
-
 void Interface :: SetNumButtonsEnable(bool isEnabled) 
 {
     for (int i = 0; i < 10; i++) 
@@ -294,6 +322,22 @@ void Interface :: ResetButtons()
     pointButtonPointer -> Enable(false);
     eqButtonPointer -> Enable(false);
 
+    eqButtonClick = false;
+
+    numBrackets = 0;
+
     buttonsPressed.clear();
     buttonIDsPressed.clear();
+    numberInputs = 0;
+}
+
+void Interface :: DisplayAndStoreInput(wxString toDisplay, int buttonID) 
+{
+    //appends inputed string to the display window
+    displayWindow -> AppendText(toDisplay);
+
+    //records the input
+    buttonsPressed.push_back(toDisplay);
+    buttonIDsPressed.push_back(buttonID);
+    numberInputs++;
 }
