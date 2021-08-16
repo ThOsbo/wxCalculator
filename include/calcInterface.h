@@ -6,6 +6,8 @@
         #include <wx/wx.h>
     #endif
 
+    #include <vector>
+
     class Interface : public wxFrame
     {
         public :
@@ -16,16 +18,25 @@
             void OnNumButtonClick(wxCommandEvent &evt);
             void OnOpButtonClick(wxCommandEvent &evt);
             void OnEqButtonClick(wxCommandEvent &evt);
+            void OnShiftButtonClick(wxCommandEvent &evt);
+            void OnDelButtonClick(wxCommandEvent &evt);
+            void OnClearButtonClick(wxCommandEvent &evt);
 
         private :
 
+            //function for displaying the input
+            void DisplayInput(wxString toDisplay);
+
             //functions for enabling and disabling buttons
+            void SetButtonsEnable(int buttonID);
             void SetOpButtonsEnable(bool toEnable[]);
             void SetNumButtonsEnable(bool isEnabled);
             void ResetButtons();
 
             //stores result of last calculation
             wxString ans = "";
+
+            std :: vector<wxString> buttonsPressed;
 
             //constant strings for certain keys
             const wxString plusSymbol = "+";
@@ -39,11 +50,13 @@
 
             //bools for checking whether a particular button has been clicked
             bool eqButtonClick = false;
+            bool shiftButtonClick = false;
 
             //integer counting the number of brackets
             int numBrackets = 0;
 
             //integers containing the start ID for each section
+            static const int ctrlStartID = 1000;
             static const int numStartID = 2000;
             static const int opsStartID = 3000;         
 

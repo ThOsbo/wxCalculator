@@ -12,17 +12,44 @@
 Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, Y_MAIN_FRAME_DIMENSION)) 
 {
     
-    wxBoxSizer *displaySizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *controlSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxGridSizer *numbersSizer = new wxGridSizer(4, 3, 5, 5);
-    wxGridSizer *opsSizer = new wxGridSizer(ceil((numOfOperations + 1) / 3.0), 3, 5, 5);
+    wxBoxSizer *frameSizer = new wxBoxSizer(wxVERTICAL);    
+    wxBoxSizer *inputSizer = new wxBoxSizer(wxHORIZONTAL);   
 
     wxFont font(25, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 
+    //sets and adds the display window to the main frame
     displayWindow = new wxTextCtrl(this, wxID_ANY, "", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, 50), wxTE_READONLY);
     displayWindow -> SetFont(font);
 
-    displaySizer -> Add(displayWindow, 0, wxEXPAND | wxALL, 5);
+    frameSizer -> Add(displayWindow, 0, wxEXPAND | wxALL, 5);
+
+    //sets and adds the control buttons
+    wxBoxSizer *controlSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxFont ctrlFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+
+    wxButton *shiftButton = new wxButton(this, ctrlStartID, "Shift", wxPoint(0, 0), wxSize(50, 25));
+    shiftButton -> SetFont(ctrlFont);
+    shiftButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnShiftButtonClick, this);
+
+    controlSizer -> Add(shiftButton, 1, wxEXPAND | wxALL, 2.5);
+
+    wxButton *delButton = new wxButton(this, ctrlStartID + 1, "Del", wxPoint(0, 0), wxSize(50, 25));
+    delButton -> SetFont(ctrlFont);
+    delButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnDelButtonClick, this);
+
+    controlSizer -> Add(delButton, 1, wxEXPAND | wxALL, 2.5);
+
+    wxButton *clearButton = new wxButton(this, ctrlStartID + 2, "Clear", wxPoint(0, 0), wxSize(50, 25));
+    clearButton -> SetFont(ctrlFont);
+    clearButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnClearButtonClick, this);
+
+    controlSizer -> Add(clearButton, 1, wxEXPAND | wxALL, 2.5);
+
+    //adds control buttons to main frame
+    frameSizer -> Add(controlSizer, 0, wxEXPAND | wxALL, 5);
+
+    //sets and adds the number buttons
+    wxGridSizer *numbersSizer = new wxGridSizer(4, 3, 5, 5);
 
     numButtons = new wxButton*[10] { nullptr };
 
@@ -44,7 +71,11 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
     pointButtonPointer = pointButton;
     numbersSizer -> Add(pointButton, 1, wxEXPAND | wxALL, 2.5);
 
-    controlSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
+    //adds all number buttons to the inputs sizer
+    inputSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
+
+    //sets and add the operation buttons
+    wxGridSizer *opsSizer = new wxGridSizer(ceil((numOfOperations + 1) / 3.0), 3, 5, 5);
 
     opButtons = new wxButton*[numOfOperations + 1] { nullptr };
 
@@ -62,7 +93,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
         opsSizer -> Add(opButton, 1, wxEXPAND | wxALL, 2.5);
     }
 
-    wxButton *eqButton = new wxButton(this, 3999, equalSymbol, wxPoint(0, 0), wxSize(40, 40));
+    wxButton *eqButton = new wxButton(this, opsStartID + 999, equalSymbol, wxPoint(0, 0), wxSize(40, 40));
     eqButton -> SetFont(font);
     eqButton -> Enable(false);
     eqButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnEqButtonClick, this);
@@ -70,11 +101,13 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
     eqButtonPointer = eqButton;
     opsSizer -> Add(eqButton, 1, wxEXPAND | wxALL, 2.5);
 
-    controlSizer -> Add(opsSizer, 1, wxEXPAND | wxALL, 5);
+    //adds the operations buttons to the inputs sizer
+    inputSizer -> Add(opsSizer, 1, wxEXPAND | wxALL, 5);
 
-    displaySizer -> Add(controlSizer, 1, wxEXPAND | wxALL, 5);
+    //adds all the input buttons to the main frame
+    frameSizer -> Add(inputSizer, 1, wxEXPAND | wxALL, 5);
 
-    this -> SetSizer(displaySizer);
+    this -> SetSizer(frameSizer);
     this -> Layout();
 
 }
@@ -101,14 +134,14 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
         }
         
         pointButtonPointer -> Enable(true);
-        displayWindow -> AppendText(std :: to_string(numClicked % 10));
+        DisplayInput(std :: to_string(numClicked % 10));
     }
     else if (evt.GetId() == pointButtonPointer -> GetId()) 
     {
         SetOpButtonsEnable(pointClickToEnable);
         eqButtonPointer -> Enable(false);
         pointButtonPointer -> Enable(false);
-        displayWindow -> AppendText(pointSymbol);
+        DisplayInput(pointSymbol);
     }
 
     evt.Skip();
@@ -144,7 +177,7 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
         SetNumButtonsEnable(true);
     }
     SetOpButtonsEnable(opClickToEnable[opClicked]);
-    displayWindow -> AppendText(operations[opClicked]);
+    DisplayInput(operations[opClicked]);
 
     evt.Skip();
 }
@@ -163,10 +196,33 @@ void Interface :: OnEqButtonClick(wxCommandEvent &evt)
     }
     
     displayWindow -> SetValue("=" + ans);
+    buttonsPressed.clear();
     ResetButtons();
     eqButtonClick = true;
 
     evt.Skip();
+}
+
+void Interface :: OnShiftButtonClick(wxCommandEvent &evt) 
+{
+    shiftButtonClick != shiftButtonClick;
+}
+
+void Interface :: OnDelButtonClick(wxCommandEvent &evt) 
+{
+
+}
+
+void Interface :: OnClearButtonClick(wxCommandEvent &evt) 
+{
+    displayWindow -> Clear();
+    buttonsPressed.clear();
+    ResetButtons();
+}
+
+void Interface :: SetButtonsEnable(int buttonID) 
+{
+    
 }
 
 void Interface :: SetOpButtonsEnable(bool toEnable[]) 
@@ -183,6 +239,12 @@ void Interface :: SetOpButtonsEnable(bool toEnable[])
         }  
              
     }
+}
+
+void Interface :: DisplayInput(wxString toDisplay) 
+{
+    displayWindow -> AppendText(toDisplay);
+    buttonsPressed.push_back(toDisplay);
 }
 
 void Interface :: SetNumButtonsEnable(bool isEnabled) 
