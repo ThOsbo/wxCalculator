@@ -25,7 +25,7 @@
         private :
 
             //function for displaying the input
-            void DisplayInput(wxString toDisplay);
+            void DisplayAndStoreInput(wxString toDisplay, int buttonID);
 
             //functions for enabling and disabling buttons
             void SetButtonsEnable(int buttonID);
@@ -37,6 +37,7 @@
             wxString ans = "";
 
             std :: vector<wxString> buttonsPressed;
+            std :: vector<int> buttonIDsPressed;
 
             //constant strings for certain keys
             const wxString plusSymbol = "+";
