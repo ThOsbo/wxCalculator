@@ -75,7 +75,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
     inputSizer -> Add(numbersSizer, 1, wxEXPAND | wxALL, 5);
 
     //sets and add the operation buttons
-    wxGridSizer *opsSizer = new wxGridSizer(ceil((numOfOperations + 1) / 3.0), 3, 5, 5);
+    wxGridSizer *opsSizer = new wxGridSizer(ceil((numOfOperations + 1) / 2.0), 2, 5, 5);
 
     opButtons = new wxButton*[numOfOperations + 1] { nullptr };
 

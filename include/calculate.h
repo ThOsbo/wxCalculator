@@ -4,6 +4,7 @@
     #include <string>
     #include <vector>
     #include <regex>
+    #include <math.h>
 
     class PerformCalculation
     {
@@ -17,6 +18,7 @@
             static std :: string Minus(std :: string expression);
             static std :: string Multiply(std :: string expression);
             static std :: string Divide(std :: string expression);
+            static std :: string Pow(std :: string expression);
 
             static std :: vector<std :: string> GetRegMatches(std :: string expression, std :: regex reg);
             static std :: string ReplaceSubstring(std :: string expression, std :: string toReplace, std :: string replaceWith);

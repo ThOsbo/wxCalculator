@@ -39,6 +39,10 @@ std :: string PerformCalculation :: GetResult(std :: string toCalc)
 
 std :: string PerformCalculation :: EvaluateExpression(std :: string expression) 
 {
+    std :: regex powReg(R"(\-?\d+(\.\d+)?\^\-?\d+(\.\d+)?)");
+
+    expression = PerformOperations(expression, powReg, &Pow);
+
     std :: regex divReg(R"(\-?\d+(\.\d+)?\/\-?\d+(\.\d+)?)");
 
     expression = PerformOperations(expression, divReg, &Divide);
@@ -129,6 +133,18 @@ std :: string PerformCalculation :: Divide(std :: string expression)
     long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 / num2);
+
+    return result;
+}
+
+std :: string PerformCalculation :: Pow(std :: string expression) 
+{
+    int powPos = expression.find("^");
+
+    long double num1 = std :: stof(expression.substr(0, powPos));
+    long double num2 = std :: stof(expression.substr(powPos + 1, expression.length() - powPos));
+
+    std :: string result = std :: to_string(std :: pow(num1, num2));
 
     return result;
 }

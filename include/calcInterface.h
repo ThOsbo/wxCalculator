@@ -46,6 +46,7 @@
             const wxString minusSymbol = "-";
             const wxString multSymbol = "x";
             const wxString divideSymbol = "/";
+            const wxString powSymbol = "^";
             const wxString openBracSymbol = "(";
             const wxString closeBracSymbol = ")";
             const wxString equalSymbol = "=";
@@ -65,24 +66,25 @@
             static const int opsStartID = 3000;         
 
             //array for all the operations the calculator can perform
-            static const int numOfOperations = 6;
-            wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, openBracSymbol, closeBracSymbol};
+            static const int numOfOperations = 7;
+            wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, powSymbol, openBracSymbol, closeBracSymbol};
 
             //arrays detailing which operations should be on and off when buttons are pressed
-            bool initialEnable [numOfOperations] = {false, true, false, false, true, false};
+            bool initialEnable [numOfOperations] = {false, true, false, false, false, true, false};
 
-            bool numClickToEnable[numOfOperations] = {true, true, true, true, false, true};
+            bool numClickToEnable[numOfOperations] = {true, true, true, true, true, false, true};
 
-            bool pointClickToEnable[numOfOperations] = {false, false, false, false, false, false};
+            bool pointClickToEnable[numOfOperations] = {false, false, false, false, false, false, false};
 
             bool opClickToEnable [numOfOperations][numOfOperations] = 
-            {
-                {false, true, false, false, true, false},
-                {false, false, false, false, true, false},
-                {false, true, false, false, true, false},
-                {false, true, false, false, true, false},
-                {false, true, false, false, true, false},
-                {true, true, true, true, false, true}
+            {   //{plus, minus, mult, divide, pow, opBrac, clBrac}
+                {false, true, false, false, false, true, false},    //plus symbol
+                {false, false, false, false, false, true, false},   //minus symbol
+                {false, true, false, false, false, true, false},    //multiply symbol
+                {false, true, false, false, false, true, false},    //divide symbol
+                {false, true, false, false, false, true, false},    //power symbol
+                {false, true, false, false, false, true, false},    //open bracket symbol
+                {true, true, true, true, true, false, true}         //closed bracket symbol
             };
 
             //pointer to the display window
