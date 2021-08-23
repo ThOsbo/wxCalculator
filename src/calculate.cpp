@@ -89,8 +89,8 @@ std :: string PerformCalculation :: Add(std :: string expression)
 {
     int divPos = expression.find("+");
 
-    float num1 = std :: stof(expression.substr(0, divPos));
-    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stof(expression.substr(0, divPos));
+    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 + num2);
 
@@ -101,8 +101,8 @@ std :: string PerformCalculation :: Minus(std :: string expression)
 {
     int divPos = expression.find("-");
 
-    float num1 = std :: stof(expression.substr(0, divPos));
-    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stof(expression.substr(0, divPos));
+    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 - num2);
 
@@ -113,8 +113,8 @@ std :: string PerformCalculation :: Multiply(std :: string expression)
 {
     int divPos = expression.find("x");
 
-    float num1 = std :: stof(expression.substr(0, divPos));
-    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stof(expression.substr(0, divPos));
+    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 * num2);
 
@@ -125,8 +125,8 @@ std :: string PerformCalculation :: Divide(std :: string expression)
 {
     int divPos = expression.find("/");
 
-    float num1 = std :: stof(expression.substr(0, divPos));
-    float num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stof(expression.substr(0, divPos));
+    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 / num2);
 
