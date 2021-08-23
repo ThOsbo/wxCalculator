@@ -54,6 +54,7 @@
             //bools for checking whether a particular button has been clicked
             bool eqButtonClick = false;
             bool shiftButtonClick = false;
+            bool pointButtonClick = false;
 
             //integer counting the number of brackets
             int numBrackets = 0;

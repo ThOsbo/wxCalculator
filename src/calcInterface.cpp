@@ -122,8 +122,6 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
 
     int buttonID = evt.GetId();
 
-    SetButtonsEnable(buttonID);
-
     int numClicked = buttonID - numStartID;
     if (numClicked <= 10) 
     {
@@ -131,8 +129,11 @@ void Interface :: OnNumButtonClick(wxCommandEvent &evt)
     }
     else if (buttonID == pointButtonPointer -> GetId()) 
     {
+        pointButtonClick = true;
         DisplayAndStoreInput(pointSymbol, buttonID);
     }
+
+    SetButtonsEnable(buttonID);
 
     evt.Skip();
 }
@@ -147,9 +148,11 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
 
     int buttonID = evt.GetId();
 
-    SetButtonsEnable(buttonID);
+    pointButtonClick = false;
 
     DisplayAndStoreInput(operations[buttonID - opsStartID], buttonID);
+
+    SetButtonsEnable(buttonID);
 
     evt.Skip();
 }
@@ -166,8 +169,21 @@ void Interface :: OnEqButtonClick(wxCommandEvent &evt)
     {
         ans = "Error";
     }
+
+    //removes trailing zeroes
+    while (ans.length() > 1) 
+    {
+        if (ans[ans.length() - 1] == '0' || ans[ans.length() - 1] == pointSymbol) 
+        {
+            ans = ans.Remove(ans.length() - 1, 1);
+        }
+        else 
+        {
+            break;
+        }
+    }
     
-    displayWindow -> SetValue("=" + ans);    
+    displayWindow -> SetValue("= " + ans);    
     ResetButtons();
     eqButtonClick = true;
 
@@ -201,11 +217,12 @@ void Interface :: OnDelButtonClick(wxCommandEvent &evt)
             numBrackets++;
         }
 
-        SetButtonsEnable(buttonIDsPressed[numberInputs - 2], true);
-
         buttonsPressed.pop_back();
         buttonIDsPressed.pop_back();
         numberInputs--;
+
+        SetButtonsEnable(buttonIDsPressed[numberInputs - 1], true);
+
     }
     else 
     {
@@ -263,6 +280,7 @@ void Interface :: SetButtonsEnable(int buttonID, bool isDelete)
         if (numClicked <= 10) 
         {
             SetOpButtonsEnable(numClickToEnable);
+
             if (numBrackets == 0) 
             {
                 eqButtonPointer -> Enable(true);
@@ -271,8 +289,46 @@ void Interface :: SetButtonsEnable(int buttonID, bool isDelete)
             {
                 eqButtonPointer -> Enable(false);
             }
+
+            if (!isDelete) 
+            {
+                if (pointButtonClick) 
+                {
+                    pointButtonPointer -> Enable(false);
+                }
+                else 
+                {
+                    pointButtonPointer -> Enable(true); 
+                }
+            }
+            else 
+            {
+                //checks to see if a point is contained in the number after a symbol is deleted
+                pointButtonClick = false;
+
+                int pos = buttonIDsPressed.size() - 1;
+                    
+                while (numStartID <= buttonIDsPressed[pos] && buttonIDsPressed[pos] < opsStartID && pos > 0) 
+                {
+                    if (buttonIDsPressed[pos] == pointButtonPointer -> GetId()) 
+                    {
+                        pointButtonClick = true;
+                        break;
+                    }
+
+                    pos--;
+                }
+
+                if (pointButtonClick) 
+                {
+                    pointButtonPointer -> Enable(false);
+                }
+                else 
+                {
+                    pointButtonPointer -> Enable(true);
+                }
+            }
             
-            pointButtonPointer -> Enable(true);
         }
         else if (buttonID == pointButtonPointer -> GetId()) 
         {
@@ -323,6 +379,7 @@ void Interface :: ResetButtons()
     eqButtonPointer -> Enable(false);
 
     eqButtonClick = false;
+    pointButtonClick = false;
 
     numBrackets = 0;
 
