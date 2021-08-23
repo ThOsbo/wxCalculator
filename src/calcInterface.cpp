@@ -2,11 +2,11 @@
 #include <calculate.h>
 
 #if !defined(X_MAIN_FRAME_DIMENSION)
-    #define X_MAIN_FRAME_DIMENSION 400
+    #define X_MAIN_FRAME_DIMENSION 450
 #endif
 
 #if !defined(Y_MAIN_FRAME_DIMENSION)
-    #define Y_MAIN_FRAME_DIMENSION 400
+    #define Y_MAIN_FRAME_DIMENSION 450
 #endif
 
 Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10), wxSize(X_MAIN_FRAME_DIMENSION, Y_MAIN_FRAME_DIMENSION)) 
@@ -65,7 +65,6 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     wxButton *pointButton = new wxButton(this, numStartID + 11, pointSymbol, wxPoint(0, 0), wxSize(40, 40));
     pointButton -> SetFont(font);
-    pointButton -> Enable(false);
     pointButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnNumButtonClick, this);
     
     pointButtonPointer = pointButton;
@@ -82,11 +81,7 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
     for (int i = 0; i < numOfOperations; i++) 
     {
         wxButton *opButton = new wxButton(this, opsStartID + i, operations[i], wxPoint(0, 0), wxSize(40, 40));
-        opButton -> SetFont(font);
-        if (operations[i] != openBracSymbol && operations[i] != minusSymbol) 
-        {
-            opButton -> Enable(false);
-        }        
+        opButton -> SetFont(font);    
         opButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnOpButtonClick, this);
 
         opButtons[i] = opButton;
@@ -95,7 +90,6 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     wxButton *eqButton = new wxButton(this, opsStartID + 999, equalSymbol, wxPoint(0, 0), wxSize(40, 40));
     eqButton -> SetFont(font);
-    eqButton -> Enable(false);
     eqButton -> Bind(wxEVT_COMMAND_BUTTON_CLICKED, Interface :: OnEqButtonClick, this);
 
     eqButtonPointer = eqButton;
@@ -106,6 +100,8 @@ Interface :: Interface() : wxFrame(NULL, wxID_ANY, "Calculator", wxPoint(10, 10)
 
     //adds all the input buttons to the main frame
     frameSizer -> Add(inputSizer, 1, wxEXPAND | wxALL, 5);
+
+    ResetButtons();
 
     this -> SetSizer(frameSizer);
     this -> Layout();
@@ -150,7 +146,15 @@ void Interface :: OnOpButtonClick(wxCommandEvent &evt)
 
     pointButtonClick = false;
 
-    DisplayAndStoreInput(operations[buttonID - opsStartID], buttonID);
+    wxString toDisplay = operations[buttonID - opsStartID];
+
+    if (toDisplay == powSymbol || toDisplay == expSymbol) 
+    {
+        toDisplay += openBracSymbol;
+        numBrackets++;
+    }
+
+    DisplayAndStoreInput(toDisplay, buttonID);
 
     SetButtonsEnable(buttonID);
 
@@ -222,7 +226,7 @@ void Interface :: OnDelButtonClick(wxCommandEvent &evt)
 
         displayWindow -> SetValue(currentInput);
 
-        if (lastInput == openBracSymbol) 
+        if (lastInput.find(openBracSymbol) != -1) 
         {
             numBrackets--;
         }
@@ -370,8 +374,7 @@ void Interface :: SetOpButtonsEnable(bool toEnable[])
         else 
         {
             opButtons[i] -> Enable(toEnable[i]);  
-        }  
-             
+        }             
     }
 }
 

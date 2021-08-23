@@ -47,10 +47,18 @@
             const wxString multSymbol = "x";
             const wxString divideSymbol = "/";
             const wxString powSymbol = "^";
+            const wxString expSymbol = "e^";
             const wxString openBracSymbol = "(";
             const wxString closeBracSymbol = ")";
             const wxString equalSymbol = "=";
             const wxString pointSymbol = ".";
+
+            const wxString sinSymbol = "SIN";
+            const wxString arcSinSymbol = "ASIN";
+            const wxString cosSymbol = "COS";
+            const wxString arcCosSymbol = "ACOS";
+            const wxString tanSymbol = "TAN";
+            const wxString arcTanSymbol = "ATAN";
 
             //bools for checking whether a particular button has been clicked
             bool eqButtonClick = false;
@@ -66,25 +74,26 @@
             static const int opsStartID = 3000;         
 
             //array for all the operations the calculator can perform
-            static const int numOfOperations = 7;
-            wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, powSymbol, openBracSymbol, closeBracSymbol};
+            static const int numOfOperations = 8;
+            wxString operations [numOfOperations] = {plusSymbol, minusSymbol, multSymbol, divideSymbol, powSymbol, expSymbol, openBracSymbol, closeBracSymbol};
 
             //arrays detailing which operations should be on and off when buttons are pressed
-            bool initialEnable [numOfOperations] = {false, true, false, false, false, true, false};
+            bool initialEnable [numOfOperations] = {false, true, false, false, false, true, true, false};
 
-            bool numClickToEnable[numOfOperations] = {true, true, true, true, true, false, true};
+            bool numClickToEnable[numOfOperations] = {true, true, true, true, true, false, false, true};
 
-            bool pointClickToEnable[numOfOperations] = {false, false, false, false, false, false, false};
+            bool pointClickToEnable[numOfOperations] = {false, false, false, false, false, false, false, false};
 
             bool opClickToEnable [numOfOperations][numOfOperations] = 
-            {   //{plus, minus, mult, divide, pow, opBrac, clBrac}
-                {false, true, false, false, false, true, false},    //plus symbol
-                {false, false, false, false, false, true, false},   //minus symbol
-                {false, true, false, false, false, true, false},    //multiply symbol
-                {false, true, false, false, false, true, false},    //divide symbol
-                {false, true, false, false, false, true, false},    //power symbol
-                {false, true, false, false, false, true, false},    //open bracket symbol
-                {true, true, true, true, true, false, true}         //closed bracket symbol
+            {   //{plus, minus, mult, divide, pow, exp, opBrac, clBrac}
+                {false, true, false, false, false, true, true, false},    //plus symbol
+                {false, false, false, false, false, true, true, false},   //minus symbol
+                {false, true, false, false, false, true, true, false},    //multiply symbol
+                {false, true, false, false, false, true, true, false},    //divide symbol
+                {false, true, false, false, false, true, true, false},    //power symbol
+                {false, true, false, false, false, true, true, false},    //exp symbol
+                {false, true, false, false, false, true, true, false},    //open bracket symbol
+                {true, true, true, true, true, false, false, true}         //closed bracket symbol
             };
 
             //pointer to the display window

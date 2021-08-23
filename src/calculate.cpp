@@ -39,6 +39,10 @@ std :: string PerformCalculation :: GetResult(std :: string toCalc)
 
 std :: string PerformCalculation :: EvaluateExpression(std :: string expression) 
 {
+    std :: regex expReg(R"((e)\^\-?\d+(\.\d+)?)");
+
+    expression = PerformOperations(expression, expReg, &Exp);
+
     std :: regex powReg(R"(\-?\d+(\.\d+)?\^\-?\d+(\.\d+)?)");
 
     expression = PerformOperations(expression, powReg, &Pow);
@@ -93,8 +97,8 @@ std :: string PerformCalculation :: Add(std :: string expression)
 {
     int divPos = expression.find("+");
 
-    long double num1 = std :: stof(expression.substr(0, divPos));
-    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stold(expression.substr(0, divPos));
+    long double num2 = std :: stold(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 + num2);
 
@@ -105,8 +109,8 @@ std :: string PerformCalculation :: Minus(std :: string expression)
 {
     int divPos = expression.find("-");
 
-    long double num1 = std :: stof(expression.substr(0, divPos));
-    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stold(expression.substr(0, divPos));
+    long double num2 = std :: stold(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 - num2);
 
@@ -117,8 +121,8 @@ std :: string PerformCalculation :: Multiply(std :: string expression)
 {
     int divPos = expression.find("x");
 
-    long double num1 = std :: stof(expression.substr(0, divPos));
-    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stold(expression.substr(0, divPos));
+    long double num2 = std :: stold(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 * num2);
 
@@ -129,8 +133,8 @@ std :: string PerformCalculation :: Divide(std :: string expression)
 {
     int divPos = expression.find("/");
 
-    long double num1 = std :: stof(expression.substr(0, divPos));
-    long double num2 = std :: stof(expression.substr(divPos + 1, expression.length() - divPos));
+    long double num1 = std :: stold(expression.substr(0, divPos));
+    long double num2 = std :: stold(expression.substr(divPos + 1, expression.length() - divPos));
 
     std :: string result = std :: to_string(num1 / num2);
 
@@ -141,10 +145,21 @@ std :: string PerformCalculation :: Pow(std :: string expression)
 {
     int powPos = expression.find("^");
 
-    long double num1 = std :: stof(expression.substr(0, powPos));
-    long double num2 = std :: stof(expression.substr(powPos + 1, expression.length() - powPos));
+    long double num1 = std :: stold(expression.substr(0, powPos));
+    long double num2 = std :: stold(expression.substr(powPos + 1, expression.length() - powPos));
 
     std :: string result = std :: to_string(std :: pow(num1, num2));
+
+    return result;
+}
+
+std :: string PerformCalculation :: Exp(std :: string expression) 
+{
+    int powPos = expression.find("^");
+
+    long double num = std :: stold(expression.substr(powPos + 1, expression.length() - powPos));
+
+    std :: string result = std :: to_string(std :: exp(num));
 
     return result;
 }
