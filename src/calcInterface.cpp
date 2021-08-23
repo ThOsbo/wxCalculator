@@ -170,18 +170,32 @@ void Interface :: OnEqButtonClick(wxCommandEvent &evt)
         ans = "Error";
     }
 
-    //removes trailing zeroes
-    while (ans.length() > 1) 
+    //removes trailing zeroes after decimal point
+    int numTrailZeroes = 0;
+    int pos = ans.length() - 1;
+
+    //counts trailing zeroes until a point is found or the start of the number is reached
+    while (pos > 0 && ans[pos] != pointSymbol) 
     {
-        if (ans[ans.length() - 1] == '0' || ans[ans.length() - 1] == pointSymbol) 
+        if (ans[pos] == '0') 
         {
-            ans = ans.Remove(ans.length() - 1, 1);
+            numTrailZeroes++;
         }
-        else 
-        {
-            break;
-        }
+
+        pos--;
     }
+
+    //removes trailing zeroes if point is found
+    if (ans[pos] == pointSymbol) 
+    {
+        ans = ans.Remove(ans.length() - numTrailZeroes, numTrailZeroes);
+    }
+
+    //removes point if found at end of answer
+    if (ans[ans.length() - 1] == pointSymbol) 
+    {
+        ans = ans.Remove(ans.length() - 1, 1);
+    }    
     
     displayWindow -> SetValue("= " + ans);    
     ResetButtons();
